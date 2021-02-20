@@ -27,7 +27,6 @@ const writeJson = (payloadObject: any, res: Response) => {
 }
 
 app.get('/message', (req, res) => {
-    console.log('ggg')
     res.writeHead(200, {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
