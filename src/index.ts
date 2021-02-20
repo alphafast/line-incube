@@ -13,9 +13,10 @@ interface IncomingMessageResponsePayload {
 }
 
 const app = express()
+app.use(express.static('public'))
 app.use(bodyparser.json())
 
-let eventStreamRes: Response
+let eventStreamReses: Response[] = []
 
 const writeJson = (payloadObject: any, res: Response) => {
     res.write('data: {\n')
@@ -26,12 +27,13 @@ const writeJson = (payloadObject: any, res: Response) => {
 }
 
 app.get('/message', (req, res) => {
+    console.log('ggg')
     res.writeHead(200, {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive'
     })
-    eventStreamRes = res
+    eventStreamReses.push(res)
 })
 
 app.post('/message', (req, res) => {
@@ -43,9 +45,13 @@ app.post('/message', (req, res) => {
         time: new Date().toDateString(),
     }
 
-    if (eventStreamRes !== undefined) {
-        writeJson(responsePayload, eventStreamRes)
+    if (eventStreamReses.length > 0) {
+        eventStreamReses.forEach( eventStreamRes => {
+            writeJson(responsePayload, eventStreamRes)
+        })
     }
+
+    res.send()
 })
 
 app.listen('3030', () => {
