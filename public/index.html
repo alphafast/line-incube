@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-        </head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    </head>
         <body>
             <div id="app">
+                <nav>
+                    <div class="nav-wrapper">
+                        <a href="#" class="brand-logo">Line Incubation Chat</a>
+                        <ul id="nav-mobile" class="right hide-on-med-and-down">
+                            <li><a href="sass.html">continue as {{ user || "Not Set" }}</a></li>
+                        </ul>
+                    </div>
+                </nav>
                 <div class="container">
                     <div class="card">
                         <div class="row">
                             <div class="card-content white-text">
-                                <div class="input-field col s6">
-                                    <input v-model="user" placeholder="Placeholder" type="text" class="validate">
+                                <div class="input-field col s12">
+                                    <input v-model="user" v-bind:disabled="isReadyToSend" placeholder="Type your user" value="user" type="text" class="validate">
                                     <label>User Name</label>
                                 </div>
-                                <div class="input-field col s6">
-                                    <input v-model="message" placeholder="Placeholder" type="password" class="validate">
-                                    <label>Password</label>
+                                <div class="input-field col s12">
+                                    <input @keyup.enter="sendMessage" v-model="message" placeholder="Type your message" type="text" class="validate">
+                                    <label>Message</label>
                                 </div>
                             </div>
                         </div>
                         <div class="card-action">
-                          <a v-on:click.prevent="sendMessage" href="#">send</a>
+                          <a @click.prevent="sendMessage" href="#">send</a>
                         </div>
                     </div>
                 </div>
                 <div class="container">
                     <ul v-show="chatMessages.length > 0" class="collection">
-                        <li v-for="chatMessage in chatMessages" class="collection-item">{{chatMessage.user}}: {{chatMessage.message}} at {{chatMessage.time}} </li>
+                        <li v-for="chatMessage in chatMessages" class="collection-item" v-bind:class="{ active: selectedUser === chatMessage.user }">{{chatMessage.time}} {{chatMessage.user}} said: {{chatMessage.message}} </li>
                     </ul>
                 </div>
-
             </div>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
