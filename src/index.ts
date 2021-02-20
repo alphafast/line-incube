@@ -16,14 +16,11 @@ const app = express()
 app.use(express.static('public'))
 app.use(bodyparser.json())
 
-let eventStreamReses: Response[] = []
+let messagesStore: IncomingMessageResponsePayload[] = []
+let eventStreamResponses: Response[] = []
 
 const writeJson = (payloadObject: any, res: Response) => {
-    res.write('data: {\n')
-    Object.keys(payloadObject).forEach(key => {
-        res.write(`data: "${key}": "${payloadObject[key]}"`)
-    })
-    res.write('data: }\\n\\n')
+    res.write('data: ' + JSON.stringify(payloadObject, null) + '\n\n')
 }
 
 app.get('/message', (req, res) => {
@@ -32,7 +29,10 @@ app.get('/message', (req, res) => {
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive'
     })
-    eventStreamReses.push(res)
+    messagesStore.forEach(message => {
+        writeJson(message, res)
+    })
+    eventStreamResponses.push(res)
 })
 
 app.post('/message', (req, res) => {
@@ -41,11 +41,12 @@ app.post('/message', (req, res) => {
     const responsePayload: IncomingMessageResponsePayload = {
         user,
         message,
-        time: new Date().toDateString(),
+        time: new Date().toLocaleTimeString(),
     }
+    messagesStore.push(responsePayload)
 
-    if (eventStreamReses.length > 0) {
-        eventStreamReses.forEach( eventStreamRes => {
+    if (eventStreamResponses.length > 0) {
+        eventStreamResponses.forEach( eventStreamRes => {
             writeJson(responsePayload, eventStreamRes)
         })
     }

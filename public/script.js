@@ -3,6 +3,7 @@ const httpInstance = axios.create({
     timeout: 10000,
 });
 
+const source = new EventSource('http://localhost:3030/message')
 var app = new Vue({
     el: "#app",
     data: {
@@ -10,9 +11,10 @@ var app = new Vue({
         message: "",
         chatMessages: []
     },
-    mounted() {
+    created() {
         source.onmessage = (event) => {
-            console.log(event)
+            const { user, message, time } = JSON.parse(event.data)
+            this.chatMessages.unshift({user, message, time})
         }
     },
     methods: {
@@ -21,10 +23,6 @@ var app = new Vue({
                 user: this.user,
                 message: this.message,
             })
-            .then((res) => {
-                this.chatMessages.push({user: this.user, message: this.message})
-            })
-            
         }
     }
 })
