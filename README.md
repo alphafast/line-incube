@@ -1,12 +1,12 @@
 line-incube
 
-##prerequest  
+## prerequest  
 ```NodeJs``` v.14 or above  
 ```npm``` v.6.14 or above  
 ```Typescript``` v.4 or above  
 
 
-##run
+## run  
 for start application use shell and type  
 ```npm install```  
 then  
@@ -14,7 +14,7 @@ then
 waiting until this message appear  
 ```server start at port 3030```
 
-##using
+## using  
 after run this app. You can access chat room by go to  
 ```http://localhost:3030```  
 in this page will have two input first is user input and right side is message input and send button at buttom of card view  
